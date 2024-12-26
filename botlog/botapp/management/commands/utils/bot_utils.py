@@ -78,7 +78,7 @@ def num_tokens_from_string(string):
 # REDIS ACTIONS
 
 def store_to_redis(chat_id: str, mapper: dict):
-    """Storing data to temp storage
+    """Storing data to Redis storage
     Args:
         chat_id (str): message.chat.id
         mapper (dict): asdict( UserMapper() )
