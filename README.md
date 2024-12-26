@@ -1,6 +1,5 @@
-# АКТУАЛЬНЫЙ РЕПОЗИТОРИЙ
 
-## Приложение реализующее логику получения данных о пользователях при помощи телеграм бота, и методов.
+## Dokerized Starter Packfor Chat-GPT Conversation management.
 
 - Получение данных о пользователе в query параметрах url
 - Инициация общения с ботом (бот для среды разработки @TestBPAssistant_bot )
@@ -11,7 +10,7 @@
 
 ### Запуск
 
-- клонируем репозиторий `git clone git@rity.fun:ivanG808/bp-bots-marketing.git`
+- клонируем репозиторий `git@github.com:ivanIStereotekk/bot-station.git`
 - переименовывваем файл с переменными окружения из ` .env_example ` в ` .env `
 - запускаем в директории с проектом ` docker compose up `
 
@@ -28,7 +27,7 @@
 
 
 ### URL с параметрами для теста
-- `http://89.110.124.73:8000/send_user_query_data/?name=Jichael%20Mackson&email=juchael.mackson%40gmail.com&phone=%2000000000&comment=Jichael_Mackson%&topic=Helloworld&contact=NoContact`
+- `>>>>local-url>>>/send_user_query_data/?name=Jichael%20Mackson&email=juchael.mackson%40gmail.com&phone=%2000000000&comment=Jichael_Mackson%&topic=Helloworld&contact=NoContact`
 
 
 
