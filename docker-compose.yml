@@ -1,0 +1,9 @@
+
+services:
+  botproj:
+    env_file:
+      - path: ./.env
+    build: .
+    ports:
+      - "8000:8000"
+    restart: always

@@ -1,0 +1,12 @@
+**/__pycache__
+.venv
+db.sqlite3
+info-helper.txt
+.idea
+.env
+.env_bots
+.env_example
+!__init__.py
+productionfiles
+nginx.conf
+

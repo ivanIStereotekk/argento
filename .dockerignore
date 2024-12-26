@@ -1,0 +1,8 @@
+.git
+.venv
+README.md
+.idea
+__pycache__
+db.sqlite3
+productionfiles
+
