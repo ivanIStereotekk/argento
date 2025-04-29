@@ -56,7 +56,7 @@ DEAL_BUTTONS_MARKUP = quick_markup(
         '❓ Ответить на вопросы': {'callback_data':'answer'},
         '📚 Показать FAQ':{'callback_data':'faq'},
         '📢 Также Вы можете подписаться на наши соцсети, чтобы постоянно быть в курсе новостей про IT и про бизнес':{'callback_data':'subscribe'}
-       },row_width=1
+       },row_width=1,
 )
 
 # CONTACT SHARING 
@@ -67,7 +67,7 @@ SHARE_CONTACT_MARKUP.add(KeyboardButton(text="Поделиться своим к
 # GPT settings
 
 # tokenizer
-encoding = encoding_for_model("gpt-4o-mini")
+encoding = encoding_for_model("gpt-4o")
 
 def num_tokens_from_string(string):
     """Returns count of tokens"""
@@ -77,19 +77,21 @@ def num_tokens_from_string(string):
 
 # REDIS ACTIONS
 
-def store_to_redis(chat_id: str, mapper: dict):
+def store_to_redis(user_id: str, mapper: dict):
     """Storing data to Redis storage
+     * -- call.from_user.id
+     * any cases - User.id
     Args:
-        chat_id (str): message.chat.id
+        user_id (str): message.chat.id
         mapper (dict): asdict( UserMapper() )
     """
     value = json.dumps(mapper)
     conn = redis.Redis(host='localhost', port=6379)
-    conn.set(chat_id,value)
-    conn.expire('key1',time=600)
+    conn.set(user_id,value)
+    conn.expire(user_id,time=600)
 
 
-def retrieve_from_redis(chat_id):
+def retrieve_from_redis(user_id):
     """Retrieve item from Redis 
     Args:
         chat_id (_type_): is a key
@@ -97,8 +99,11 @@ def retrieve_from_redis(chat_id):
         _type_: python dict
     """
     conn = redis.Redis(host='localhost', port=6379, decode_responses=True)
-    result = conn.get(chat_id)
-    return json.loads(result)
+    result = conn.get(user_id)
+    if result:
+        return json.loads(result)
+    else:
+        return False
         
     
 
@@ -106,11 +111,10 @@ def retrieve_from_redis(chat_id):
 class UserMapper:
     """Temp storage item for Redis
     * key is - Message.chat.id
-    * typed_name - name that typed user while asked name
+    * typed_username - name that typed user while asked name
     * typed telegram @username
     * gpt_init - key that shows in GPT conversation thread 
     """
-    typed_name: str = field(default=None)
     typed_username: str = field(default=None)
     gpt_init: bool = field(default=False)
 

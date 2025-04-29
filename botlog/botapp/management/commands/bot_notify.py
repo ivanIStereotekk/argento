@@ -9,7 +9,10 @@ from openai import OpenAI
 from dataclasses import asdict
 from .utils.bot_utils import START_BUTTON_MARKUP,LEAVE_ME_CONTACT_MARKUP, callback_data
 from .utils.bot_utils import DEAL_BUTTONS_MARKUP,SHARE_CONTACT_MARKUP,HANDLED_MESSAGES
-from .utils.completion_utils import completion_tools,system_instruction, update_conversations, completion_update_response,CONVERSATION_HISTORY                  
+from .utils.bot_utils import UserMapper,store_to_redis,retrieve_from_redis
+from .utils.completion_utils import completion_tools,\
+                            system_instruction, update_conversations, \
+                                completion_update_response,CONVERSATION_HISTORY                  
 from redis import Redis
 
 
@@ -48,7 +51,7 @@ def callback_query(call):
     NOTIFY_BOT.answer_callback_query(call.id,callback_data[call.data],show_alert=False)
     match call.data:
         case 'passed': 
-            NOTIFY_BOT.send_message(call.message.chat.id,callback_data[call.data],reply_markup=LEAVE_ME_CONTACT_MARKUP)
+            NOTIFY_BOT.send_message(call.message.chat.id,callback_data[call.data],reply_markup=DEAL_BUTTONS_MARKUP)
         case 'phone': 
             message_ = "Вы можете нажать - Поделиться контактом"
             NOTIFY_BOT.send_message(call.message.chat.id,message_,reply_markup=SHARE_CONTACT_MARKUP)
@@ -58,7 +61,7 @@ def callback_query(call):
             NOTIFY_BOT.send_message(call.message.chat.id,message_,reply_markup=SHARE_CONTACT_MARKUP)
         case 'later': 
             later_message = "Вы выбрали поделится позже..."
-            NOTIFY_BOT.send_message(call.message.chat.id,later_message)
+            NOTIFY_BOT.send_message(call.message.chat.id,later_message,reply_markup=DEAL_BUTTONS_MARKUP)
         case 'video': 
             # Here we need to add link or button... Need decision of people
             NOTIFY_BOT.send_message(call.message.chat.id,callback_data[call.data])
@@ -69,8 +72,9 @@ def callback_query(call):
         case 'subscribe': 
             NOTIFY_BOT.send_message(call.message.chat.id,callback_data[call.data])
         case 'answer':
-            # Here we should add to Redis storage value that will say that the user initiated conversation  
-            # with the GPT BOT. This value will show how to interact with this users 
+            # When user pushes button that have 'answer' callback_data - we do create user mapper in redis            
+            current_user = UserMapper(gpt_init=True) # getting user id from call...
+            store_to_redis(user_id=call.from_user.id,mapper=asdict(current_user)) # Storing to redis!
             NOTIFY_BOT.send_message(call.message.chat.id,callback_data[call.data])
         case _:
             NOTIFY_BOT.answer_callback_query(call.id,callback_data[call.data],show_alert=True)
@@ -116,20 +120,28 @@ REDIS = Redis(host='localhost', port=6379, decode_responses=True)
 def echoer(bot_message):
     """This handler responds on any text messages 
     while messages are not in HANDLED_MESSAGES list
+    and user_data in redis temp storage has key: gpt_init = True
     * assistant : gpt-4
     """
-    response = completion_update_response(
-        client=client,
-        messages_history=update_conversations(message=bot_message.text,conversations=CONVERSATION_HISTORY,system_instruction=system_instruction),
-        completion_tools=completion_tools
-        )
-    if isinstance(response,list):
-        # I paused on this... HERE ARE FUNC CALL !
-        all_call = f"{response[0]} {response[1]}"
-        NOTIFY_BOT.reply_to(message=bot_message,text=all_call)
-    # tex_rep = f" {response}   \n \n \n {CONVERSATION_HISTORY}"
+    if retrieve_from_redis(user_id=bot_message.from_user.id): # H E R E    I S   >>>
+        response = completion_update_response(
+            client=client,
+            messages_history=update_conversations(message=bot_message.text,conversations=CONVERSATION_HISTORY,system_instruction=system_instruction),
+            completion_tools=completion_tools
+            )
+        if isinstance(response,list):
+            # If it is list that means that is function_calling with params.
+            all_call = f"{response[0]} {response[1]}"
+            current_user = UserMapper(gpt_init=True) # getting user id from call...
+            store_to_redis(user_id=bot_message.from_user.id,mapper=asdict(current_user))
+            NOTIFY_BOT.reply_to(message=bot_message,text=all_call)
+        # tex_rep = f" {response}   \n \n \n {CONVERSATION_HISTORY}"
+        else:
+            current_user = UserMapper(gpt_init=True) # getting user id from call...
+            store_to_redis(user_id=bot_message.from_user.id,mapper=asdict(current_user))
+            NOTIFY_BOT.reply_to(message=bot_message,text=response)
     else:
-        NOTIFY_BOT.reply_to(message=bot_message,text=response)
+        return
     
     
 

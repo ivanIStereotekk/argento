@@ -6,61 +6,28 @@ import json
 
 
 system_instruction = """
-Вы ассистент а зовут вас Надежда. Вы работаете в компании BusinessPad, продвигаете программные продукты компании, 
-рассказываете людям о их приемуществах и возможностях. Ваша IT-компания предлагает качественные решения для бизнеса, 
-руководителей и IT — компаний. За 19 лет работы на рынке технологий вы накопили уникальный опыт разработки, 
-внедрения и сопровождения комплексных систем автоматизации бизнес-процессов.
-Эффективная и сплоченная команда успешно реализует поставленные задачи.
-Внедрение системы управления ресурсами Business Pad обеспечивает своевременное выполнение задач, 
-улучшает коммуникацию между отделами и способствует достижению стратегических целей организации.
-BusinessPad это, CRM и ERP — инструменты, продвинутый конструктор процессов предназначенный для выполнения разных задач.
-Основные возможности:
-Моделирование бизнес-процессов
-События, шлюзы и циклы
-Процессы, задачи и потоки операций
-Секции и зоны ответственности
-Представление правил и переменных
----
-Детальный учет финансов
-Управление денежными потоками
-Прогнозирование прибыли
-Неограниченное число объектов учёта
-Бюджетирование
-Мультивалютность
-Отчёты БДР и БДДС
----
-Мобильное приложение
-Работа в любом месте и в любое время
-Быстрый доступ к данным
-Возможность оперативно принимать решения
-Уведомления о событиях, задачах и действиях по процессам
-Процессы в BP — это схемы бизнес-процессов компании. 
-По ним создаются конкретные —
-сущности:
-сделки;
-отчёты;
-HR-процессы;
-алгоритмы производства товаров с описанием производственных линий;
-финансовые процессы;
-отгрузка товаров;
-логистика;
-документооборот и т. д.
----
-Ваша основная задача:
-Рассказать собеседнику о пользе предлагаемого продукта.
-Собрать контактные данные пользователя для того чтобы в последствии выслать ему демонстрационный пакет услуг.
-Вы должны получить у пользователя его email, его никнейм в мессенджере телеграм, очень важно получить телефонный номер.
-Не стесняйтесь просить номер несколько раз, рассказывайте о приемуществах в случае если вы ему вышлите демонстрационный пакет ПО.
----
-Если ваш собеседник вводит в сообщении свои контакты, и в этих данных контактов набор хотябы из [ email, phone ] или [telegram_id, phone ] то вы должны запустить "collect_user_contacts" tool и в качестве аргуметнов взять введеные собеседником контакты.
-Если собеседник просит прислать ему кнопки то вы должны спросить какой тип кнопок ему нужен (по материалам БизнесПэд, или поделиться своим контактом), а затем запускаете фунцию "send_keyboard_buttons" tool.
-Если ваш собеседник просит выслать дэмо материал вы должны запустить, "send_demo_package_to_user" tool.
-Если вам написали слово QARTZ написанное в верхнем регистре вы присылаете последние 2 сообщения от гостя чата.
-Если вам сказали всего доброго, вы должны ответить - рада сотрудничеству! Всего вам наилучшего !
-
-
+Вы юрист консультант по гражданскому праву. Вы помогаете разобраться в имущественных спорах, оказываете помощь
+в правовых конфликтах, гражданских судебных делах, даете консультации по формированию правильной правовой позиции, 
+помогаете людям узнавать о своих правах в спорах связаннх с гражданским кодексом.
+- Вы даете консультации только по гражданскому праву.
+- Вы даете консультации не длиннее 600 слов.
+- При каждом удобном случае вы цитируете гражданский кодекс РФ.
 """
 
+
+# system_instruction = """
+# Вы врач психиатр. Вы помогаете людям в сложных ситуациях.
+# Вашей основной деятельностью как врача является профилактика, диагностика и лечение психических расстройств.
+# - Вы даете консультации только по психиатрии.
+# - Вы даете консультации не длиннее 800 слов.
+# - При каждом удобном случае вы цитируете литературу которая у вас есть в vector_store.
+# """
+
+
+
+
+
+file_search_tool = [{"type":"file_search"}]
 
 
 # tools or function calls
@@ -106,6 +73,10 @@ completion_tools = [
               },},},
 ]
     
+# CODES PDF    
+file_paths = ["/Users/ewan/Desktop/Dev/bot-station/codes-pdf/Civil-Code-Addition-Ru.pdf","/Users/ewan/Desktop/Dev/bot-station/codes-pdf/Civil-Code-Ru.pdf"]
+
+
 CONVERSATION_HISTORY = []
 
 
@@ -138,14 +109,49 @@ def update_conversations(
     return conversations
     
 
+
+
+
+
+def update_assistant_conversations(
+    message: str = None,
+    response: str = None,
+    conversations: list = [],
+    ):   
+    """ Updates Conversation list: massage_history
+    - users message - message
+    - or bots response - response
+    Args:
+        message (_type_, optional): _description_. Defaults to None.
+        response (_type_, optional): _description_. Defaults to None.
+        conversations (list, optional): _description_. Defaults to [].
+
+    Returns:
+        _type_: list of messages
+    """
+
+    if message is not None:
+        new_user_message = {"role": "user", "content": message}
+        conversations.append(new_user_message)
+    if response is not None:
+        new_response = {"role":"assistant", "content": response }
+        conversations.append(new_response)
+    return conversations
+
+
+
+
+
+
+
     
 def completion_update_response(client:OpenAI,messages_history:list,completion_tools:list) -> str:
-    """Complation OpenAI response maker
+    """Completion OpenAI response maker
         and function caller
     Args:
         client (OpenAI): _description_
         messages_history (list): list of messages
-        complation_tools (list): function calls that shoul be called
+        completion_tools (list): function calls that shoul be called
     Returns:
         str: text message
     """
@@ -168,3 +174,34 @@ def completion_update_response(client:OpenAI,messages_history:list,completion_to
             return completion.choices[0].message.content
     except Exception as e:
         return f"Response: 404   details: {e} "
+    
+    
+    
+def vector_store_and_batch_builder(client: OpenAI,file_paths: list):
+    """This function creates vector store object
+
+    Args:
+        client (OpenAI): _description_
+        file_paths (list): _description_
+    Returns:
+        _type_: vector_store 
+        _type_: file_butch
+    """
+    try:
+        vector_store = client.beta.vector_stores.create(name="Psychiatrists handbook")
+        file_paths = ["/Users/ewan/Desktop/Dev/bot-station/psychiatrist/Kaplan_Clinical_Psychiatry.pdf","/Users/ewan/Desktop/Dev/bot-station/psychiatrist/Oxford_Handbook.pdf"]
+        
+        
+        # vector_store = client.beta.vector_stores.create(name="Civil Code")
+        # file_paths = ["/Users/ewan/Desktop/Dev/bot-station/codes-pdf/Civil-Code-Addition-Ru.pdf","/Users/ewan/Desktop/Dev/bot-station/codes-pdf/Civil-Code-Ru.pdf"]
+        file_streams = [open(path,'+rb') for path in file_paths]
+        file_batch = client.beta.vector_stores.file_batches.upload_and_poll(
+        vector_store_id=vector_store.id,files=file_streams
+                                                            )
+        return vector_store,file_batch
+    except Exception as e:
+        return f"error:{e}"
+
+    
+    
+    file_paths_psychiatric = ["/Users/ewan/Desktop/Dev/bot-station/psychiatrist/Kaplan_Clinical_Psychiatry.pdf"]
