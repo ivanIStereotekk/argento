@@ -61,3 +61,6 @@ file_batch = client.beta.vector_stores.file_batches.upload_and_poll(vector_store
 print(file_batch.status,"<<< STATUS")
 print(file_batch.file_counts,"  : COUNTS")
 assistant = client.beta.assistants.update(assistant_id=assistant.id)
+
+
+

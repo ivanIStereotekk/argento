@@ -9,4 +9,4 @@ info-helper.txt
 !__init__.py
 productionfiles
 nginx.conf
-
+.vscode
