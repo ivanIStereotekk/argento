@@ -1,0 +1,298 @@
+openai_key openai_key: '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'
+gpt_bot_token: '7671646736:AAGai4zEoizruZr6diCC6Lqyuf_lIc6rEf8'
+
+PORTS FOR NGROK : 443, 80, 88 и 8443
+
+
+
+Authtoken saved to configuration file: /Users/ewan/Library/Application Support/ngrok/ngrok.yml
+
+ACTION TRACKER BOT BP = 7671646736:AAGai4zEoizruZr6diCC6Lqyuf_lIc6rEf8
+
+
+'Здравствуйте! Я бот компании BusinessPad! Я здесь, чтобы помочь Вам работать в вашей новой ERP-системе.
+Пожалуйста, нажмите "Добавить контакт" или  "Отказаться".'
+
+
+
+# DOCS
+telegram api sdk docs: https://telegram-bot-sdk.readme.io/reference/sendmessage
+read sendMessage: https://core.telegram.org/bots/api#sendmessage
+
+
+-------------------------------------------
+hook: https://api.telegram.org/bot7661579819:AAHE_70OUFXJOh6uJ3gKlwqyEZDjzCYGdVc/getUpdates
+@ActionTrackerBP_bot
+Получение обновлений от бота
+curl https://api.telegram.org/bot$7940950711:AAELrfovPcH5c8Oic-uevLk7nFL5bdNtTcE/getUpdates | -r '.result[].message.chat.id'
+
+
+
+
+# Вопрос по логике оповещения о том что пользователь хочет обратный звонок.
+
+Подключаясь к боту любой юзер инициирует приватный чат с ботом.
+Но мы хотим получать сообщения о том что на фронт пришел потенциальный клиент и хочет чтоб ему перезвонили.
+Для этого он оставляет контакты, а контакты (в задании) должны лететь в бота. Вопрос: в бота, и во все чаты? В бота и в чат с конкретным пользователем? С каким тогда?
+На мой взгляд... Логично тогда сыпать сообщения в группу или канал где участники те кто должен их видеть эти сообщения. 
+Зачем приватные данные всем кто когда либо открывал бота у себя на устройстве...
+
+
+
+
+# WORK IN PROGRESS
+
+
+#  Сохраняем в БД юзера с фронта в GET query params - Done (+ оповещение в чат/канал)
+# В бот улетают данные с бота, и маякует в чат/канал что пришел юзер и он хочет обратный звонок - Done
+# юзер в боте дал котакт - Done
+# контакт улетел в БД - Done
+# telegram User диаложит с GPT-4 
+# Запись в БД диалогов - Done
+# Админка в
+
+
+
+# Сделать ручку выгрузки в Exel юзеров которые пришли когда либо - Нет
+
+Дописать сценарий сборки копоуз
+Переделать БД на PROGRESS
+Понять  gitlab-cy и написать....
+
+http://127.0.0.1:8000/send_user_query_data/?name=Jichael%20Mackson&email=juchael.mackson%40gmail.com&phone=%2000000000&comment=Jichael_Mackson%&topic=Helloworld&contact=NoContact
+
+
+
+
+
+
+https://89.110.124.73:8000/send_user_query_data/?name=James%20Bond&email=bond.james%40gmail.com&phone=%2B7999007007&comment=Agent%20%D0%BF%D0%BE%%D0%BD%D0%B5%D0%BF%D0%BE%D0%BD%D1%8F%D1%82%D0%BD%D1%8B%D0%BC%%D0%B2%D0%BE%D0%BF%D1%80%D0%BE%D1%81%D0%B0%D0%BC&topic=How%To%Steal%BillionDollar&contact=TESTINGAPP-1
+
+POST rq example: curl -v -H "Content-Type: application/json" -X POST -d "{ \"name\": \"Supername\",\"email\": \"abc123@ex.com\",\"phone\":\"+76876868876\",\"comment"\:\"COMENT NUM 1"\,\"contact"\:\"Users CONTACT-1"\ }" https://7d86-219-100-37-239.ngrok-free.app/post_user_data/
+
+curl -d "Content-Type: application/json" -X POST  "{ \"name\": \"Supername\",\"email\": \"abc123@ex.com\",\"phone\":\"+76876868876\",\"comment"\:\"COMENT NUM 1"\,\"contact"\:\"Users CONTACT-1"\ }" https://7d86-219-100-37-239.ngrok-free.app/post_user_data/
+
+
+
+
+
+curl -d "name=Name&email=my@email.com&phone=+752525262727&comment=UsersComment&contact=ContactNumberOne" -X POST http://127.0.0.1:8000/post_user_data/
+
+
+curl -d "name=Name&email=my@email.com&phone=+752525262727&comment=UsersComment&contact=ContactNumberOne" -X POST https://7d86-219-100-37-239.ngrok-free.app/post_user_data/
+
+
+
+Json-ина в новом методе:
+{
+        "name":"Ivan",
+        "email":"ex@gmail.com",
+        "phone":"+45678987654567",
+        "comment":"GOOD COMMENT",
+        "contact":"my contact is phone"
+}
+
+
+
+django cookbook https://books.agiliq.com/projects/django-admin-cookbook
+
+
+
+
+
+################################    -   t.me/IvanG808_bot. 
+Use this token to access the HTTP API:
+8183165451:AAFB-5iyr3blAVKCVzSi3dJDq6Dt7v8j5r0
+Keep your token secure and store it safely, it can be used by anyone to control your bot.
+
+For a description of the Bot API, see this page: https://core.telegram.org/bots/api
+
+
+#####################################################
+# Идея передела модели ОРМ пользователя.
+ 
+     front    |    teleg user
+   -------------------------
+    # name         first_name
+    # email        user_id   >>> contact_resource: 'ivan.atp3@gmail.com'  или  767685858 
+    # comment  
+    # created      created
+    # phone        phone_numbe
+
+# what if user has a field     
+
+contact_resource: 'ivan.atp3@gmail.com'   or  767685858 
+
+if isinstance(user.contact_resource,int):
+        do user...
+elif isinstance(user.contact_resource,str):
+        do other thing...
+
+# or user.contact_resource.isnumeric() or user.contact_resource.isdigit()
+
+
+
+
+
+
+
+
+
+############################################## 
+получено от Василия 13:23 / 10 декабря 2024
+Сведения о актуальном узле публикации ПО:
+IP 89.110.124.73
+User: root
+Password:  2sk1ixw2gfTdqC3F
+
+
+
+
+
+@TestBPAssistant_bot
+
+
+Use this token to access the HTTP API:
+7602292698:AAF9I2MAThDZIGAw3TunyAmTEA6ByXkiHes
+
+
+
+
+# Adding method to the admin panel which returns Exel document with two sheets in one file
+ech sheet has its own data set telegramUsers FrontendUsers
+
+Мне надо написать метод который будет делать два датасэта
+класть в один документ но в разные вкладки два набора данных
+
+
+1 - 
+
+
+
+Решение по расширению админки в джанго:
+Ставим это... https://github.com/jsocol/django-adminplus
+
+Затем расширяем морду у админки джанги, на морде урл. 
+Тык в урл(меню на морде)... А в ответ файл !
+И я бы вернулся к прошлой реализации выгрузки ексель файлов, она красотка !
+
+
+
+
+
+export conf:
+https://django-import-export.readthedocs.io/en/latest/advanced_usage.html#modify-xlsx-format
+
+
+
+
+
+Читаем последовательно !
+
+Прокси Модели:
+https://docs.djangoproject.com/en/5.1/topics/db/models/#proxy-models
+
+Мета параметры моделей:
+https://docs.djangoproject.com/en/5.1/ref/models/options/
+
+
+
+
+https://redis.io/docs/latest/commands/expire/
+
+
+
+@dataclass 
+class UserMapper:
+    typed_name: str = field(default=None)
+    typed_id: str = field(default=None)
+    gpt_init: bool = field(default=False)
+    first_name: str = field(default=None)
+    last_name: str = field(default=None)
+    username: str = field(default=None)
+    user_id: int = field(default=None)
+    chat_id: int = field(default=None)
+
+
+
+
+
+
+
+# assistant working example
+
+@NOTIFY_BOT.message_handler(func=lambda m: True)
+def echoer(bot_message):
+    """This handler responds on any text messages 
+    while messages are not in HANDLED_MESSAGES list
+    * assistant : gpt-4
+    """
+    messages_history = []
+
+    assistant = client.beta.assistants.create(
+        
+        model="gpt-4o",
+        name="Anna",
+        instructions=system_message,
+        tools=completion_tools,
+    )
+    print(assistant)
+    thread = client.beta.threads.create()
+    
+    message = client.beta.threads.messages.create(
+    thread_id=thread.id,
+    role="user",
+    content=bot_message.text,)
+    
+    run = client.beta.threads.runs.create_and_poll(
+    thread_id=thread.id,
+    assistant_id=assistant.id,
+    instructions=system_message + f"Please address the user as {bot_message.from_user.first_name}",
+    )
+    if run.status == 'completed': 
+        messages = client.beta.threads.messages.list(
+        thread_id=thread.id
+        )
+        message_obj = messages.data[0]
+        text_content_block = message_obj.content
+        text_inside = text_content_block[0].text
+        revailed_value = text_inside.value
+        NOTIFY_BOT.reply_to(message=bot_message,text=str(revailed_value))
+    else:
+        NOTIFY_BOT.reply_to(message=bot_message,text=run.status)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# FILE SEARCH
+
+https://platform.openai.com/docs/assistants/tools/file-search
+
+
+# File search customization 
+
+https://platform.openai.com/docs/assistants/tools/file-search?context=without-streaming#customizing-file-search-settings
+
+
+
+
+prompt-params = key / value params and buttons
+
+
+
+--- RAG на Ollama 
+
+
+https://chatgpt.com/c/6801f1b6-9194-800b-9bb1-d13d5c0e9a4d
