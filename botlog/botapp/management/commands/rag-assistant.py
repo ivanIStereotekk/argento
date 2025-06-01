@@ -24,8 +24,6 @@ redis_host = env('REDIS_HOST')
 redis_port = env('REDIS_PORT')
 
 
-
-
 # !!! Создать класс builder для того чтобы на каждую тему отвечал свой ассистент
 
 # assistant working example
@@ -38,9 +36,6 @@ def echoer(bot_message):
     formated = "NONE NONE"
     NOTIFY_BOT.send_message(chat_id=bot_message.chat.id,text=formated)
 
-    
-        
-        
         
 class Command(BaseCommand):
     help = 'Runs Contact GPT-4 assistant on telegram Bot Base  '
@@ -48,3 +43,5 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         NOTIFY_BOT.remove_webhook()
         NOTIFY_BOT.infinity_polling()
+
+

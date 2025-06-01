@@ -1,5 +1,9 @@
 
 ## Dokerized Starter Packfor Chat-GPT Conversation management.
+> [!INFO]
+> Приложение в процессе разработки
+
+
 
 - Получение данных о пользователе в query параметрах url
 - Инициация общения с ботом (бот для среды разработки @TestBPAssistant_bot )
