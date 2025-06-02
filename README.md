@@ -48,8 +48,12 @@
 
 
 
-#### URL с параметрами для теста
-- `>>>>local-url>>>/send_user_query_data/?name=Jichael%20Mackson&email=juchael.mackson%40gmail.com&phone=%2000000000&comment=Jichael_Mackson%&topic=Helloworld&contact=NoContact`
+#### URL с параметрами для `POST` запроса
+
+> [!NOTICE]
+> URL должен соответствовать вашему домену или имени хоста в docker.
+
+ ```http://localhost:8000/send_user_query_data/?name=Jichael%20Mackson&email=juchael.mackson%40gmail.com&phone=%+79883442299&comment=Jichael_Mackson%&topic=Helloworld&contact=Мои&Контакты```
 
 
 
