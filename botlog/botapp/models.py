@@ -69,7 +69,7 @@ class TelegramUserContactModel(models.Model):
         verbose_name_plural = 'Контакты из Телеграмм'
 
 class TelegramBotDialogModel(models.Model):
-    """Chat Message or Prompt Initiated by user into Telegram GPT-4 Chat
+    """Chat Message or Prompt Initiated by user into Telegram GPT-4 Chat  - Заменю позже!
     * username: str
     * prompt: str
     * response: str
@@ -84,6 +84,18 @@ class TelegramBotDialogModel(models.Model):
     class Meta:
         verbose_name = "Запись диалога с ботом"
         verbose_name_plural = "Записи диалогов с ботом"
+        
+        
+class ConrextRAGModel(models.Model):
+    """Context model!
+    * username: str
+    * prompt: str
+    * response: str
+    * created: datetime.date
+    """
+    pass
+
+    
 
 
             
